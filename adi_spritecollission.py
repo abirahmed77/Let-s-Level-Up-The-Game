@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 
+# Constants
 SCREEN_WIDTH, SCREEN_HEIGHT = 500, 400
 MOVEMENT_SPEED = 5
 FONT_SIZE = 72
@@ -29,12 +30,14 @@ def create_sprite(color, width, height, group):
     return sprite
 
 def main():
+    # Initialize Pygame
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Sprite Collision")
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("Times New Roman", FONT_SIZE)
     
+    # Try to load background, fallback to solid color
     try:
         background = pygame.transform.scale(pygame.image.load("b.jpg"), 
                                           (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -42,26 +45,31 @@ def main():
         background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         background.fill(BLUE)
     
+    # Create sprites
     all_sprites = pygame.sprite.Group()
     player = create_sprite(BLACK, 30, 20, all_sprites)
     target = create_sprite(RED, 30, 20, all_sprites)
     
+    # Game state
     running = True
     won = False
     
+    # Main game loop
     while running:
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_x:
                     running = False
-                elif won and event.key == pygame.K_r:
+                elif won and event.key == pygame.K_r:  # Restart game
                     all_sprites.empty()
                     player = create_sprite(BLACK, 30, 20, all_sprites)
                     target = create_sprite(RED, 30, 20, all_sprites)
                     won = False
         
+        # Game logic
         if not won:
             keys = pygame.key.get_pressed()
             x_move = (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * MOVEMENT_SPEED
@@ -72,6 +80,7 @@ def main():
                 all_sprites.remove(target)
                 won = True
         
+        # Rendering
         screen.blit(background, (0, 0))
         all_sprites.draw(screen)
         
